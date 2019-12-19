@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+   <link href="https://fonts.googleapis.com/css?family=Anton|Cinzel&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+	<header><h1>STARMAGOTCHI</h1></header>
+	<div id='nameForm' >
+	<form id='form'>
+		Enter Name Here
+		<input id='nameInput'  type="text"></input>
+		<button id="submitName">Submit</button>
+	</form>
+	
+	
+
+</div>
+	<nav >
+		<ul id= 'stats-container' >
+			<li class="name">Name: <span class='stat'><strong id="name">Yodagochi</strong></span></li>
+			<li class="age">Age: <span  class='stat' id="age">1</span></li>
+			<li class="hunger">Hunger: <span  class='stat' id="hunger">20</span></li>
+			<li class="sleepiness">Sleepiness: <span  class='stat' id="sleepiness">20</span></li>
+			<li class="boredom">Boredom: <span  class='stat' id="boredom">20</span></li>
+
+		</ul>
+	</nav>
+	<main id='play-area'></main>
+	
+	<footer >
+		<ul id="button-container">
+			<li><button id="feed">Feed</button></li>
+			<li><button id="play">Play</button></li>
+			<li><button id="light">Turn Off Lights</button></li>
+		</ul>
+	</footer>
+</body>
+<script src="js/app.js"></script>
+
+</html>
