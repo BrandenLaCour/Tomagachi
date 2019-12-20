@@ -16,6 +16,7 @@ const game = {
     pet: {},
     characterChoice: '',
     characterImages: [],
+    gotOld: false,
     time: 0,
     started: false,
     moveInterval: true,
@@ -45,7 +46,7 @@ const game = {
     },
     runGame() {
 
-    	if (this.dead === false) this.resetAnimation()
+        if (this.dead === false) this.resetAnimation()
         this.incrementTimer()
         this.incrementAge()
 
@@ -66,7 +67,7 @@ const game = {
             }
         }
         this.endGame()
-        
+
 
 
 
@@ -152,14 +153,13 @@ const game = {
         const yoda = $('#yoda')
         if (this.pet.age > 5) {
 
-        	if (this.characterChoice === 'Yoda'){
-        		yoda.attr('src', 'images/yodaPlay.png')
-        	}
-        	else{
-        		yoda.attr('src', 'images/yodaplay.png')
-        	}
+            if (this.characterChoice === 'Yoda') {
+                yoda.attr('src', 'images/yodaPlay.png')
+            } else {
+                yoda.attr('src', 'images/yodaplay.png')
+            }
 
-            
+
         } else {
             yoda.attr('src', 'images/yodaplay.png')
         }
@@ -168,51 +168,51 @@ const game = {
     startMove() {
 
 
-       
-            $('#yoda').animate({
-                'margin-left': '+= 400'
 
-            }, 2500, this.moveRight())
+        $('#yoda').animate({
+            'margin-left': '+= 400'
 
-            if (this.rotated){
-            	this.rotateRight()
-            	this.rotated = false
-            }else{
-            	this.rotateLeft()
-            	this.rotated = true
-            }
+        }, 2500, this.moveRight())
+
+        if (this.rotated) {
+            this.rotateRight()
+            this.rotated = false
+        } else {
+            this.rotateLeft()
+            this.rotated = true
+        }
 
 
     },
     rotateLeft() {
 
-        
-
-            $('#yoda-container').attr('class', 'yoda-rotate-left')
 
 
-        
+        $('#yoda-container').attr('class', 'yoda-rotate-left')
+
+
+
 
     },
-    rotateRight(){
-
-    	
-
-            $('#yoda-container').attr('class','yoda-rotate-right')
+    rotateRight() {
 
 
-        
+
+        $('#yoda-container').attr('class', 'yoda-rotate-right')
+
+
+
     },
     moveRight() {
 
 
-        
-            $('#yoda').animate({
-                'margin-right': '+=800'
 
-            }, 3000, this.moveLeft())
+        $('#yoda').animate({
+            'margin-right': '+=800'
 
-        
+        }, 3000, this.moveLeft())
+
+
     },
     moveLeft() {
 
@@ -246,41 +246,49 @@ const game = {
     },
     getOld() {
 
-    	if (this.characterChoice === 'Yoda'){
+        if (this.gotOld === false) {
 
-    		$('#yoda').attr('src', this.characterImages[1])
+            if (this.characterChoice === 'Yoda') {
 
-    	}
-    	else {
-    		$('#yoda').attr('src', this.characterImages[0])
+                $('#yoda').attr('src', this.characterImages[1])
+                this.gotOld = true;
 
-    	}
 
-        
+            } else {
+                $('#yoda').attr('src', this.characterImages[0])
+
+            }
+
+
+
+
+        }
+
+
+
     },
     eatAnimation() {
 
         const yoda = $('#yoda')
 
 
-    
-            yoda.attr('src', 'images/food.png')
+
+        yoda.attr('src', 'images/food.png')
 
 
 
     },
-    chooseCharacter(pet){
+    chooseCharacter(pet) {
 
-    	if (pet === 'Luke'){
-    		this.characterChoice = 'Luke'
-    		this.characterImages = ['images/youngluke.png','images/youngluke2.png']
-    	}
-    	else {
-    		this.characterChoice = 'Yoda'
-    		this.characterImages = ['images/babyyoda.png','images/oldyoda.png']
-    	}
-    	$('#choices').hide()
-    	
+        if (pet === 'Luke') {
+            this.characterChoice = 'Luke'
+            this.characterImages = ['images/youngluke.png', 'images/youngluke2.png']
+        } else {
+            this.characterChoice = 'Yoda'
+            this.characterImages = ['images/babyyoda.png', 'images/oldyoda.png']
+        }
+        $('#choices').hide()
+
     }
 
 }
@@ -346,8 +354,8 @@ $('form').submit((e) => {
 
 $('.choose').click((e) => {
 
-	const choice = $(e.target).text()
-	game.chooseCharacter(choice)
+    const choice = $(e.target).text()
+    game.chooseCharacter(choice)
 
 
 })
