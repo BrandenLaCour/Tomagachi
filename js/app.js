@@ -250,12 +250,13 @@ const game = {
 
             if (this.characterChoice === 'Yoda') {
 
-                $('#yoda').attr('src', this.characterImages[1])
+
+                $('#yoda').attr('src', 'images/oldyoda')
                 this.gotOld = true;
 
 
             } else {
-                $('#yoda').attr('src', this.characterImages[0])
+                $('#yoda').attr('src', 'images/youngluke2.png')
 
             }
 
