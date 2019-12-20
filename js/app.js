@@ -14,19 +14,27 @@ let intervalSet;
 
 const game = {
     pet: {},
+    characterChoice: '',
+    characterImages: [],
     time: 0,
+    started: false,
+    moveInterval: true,
     ageInterval: 2,
     atrophyInterval: 3,
     nightCount: 4,
     lightsOut: false,
     dead: false,
+    rotated: false,
     setupGame(name) {
 
         this.pet = new Tomagachi(name)
+        $('#yoda').attr('src', this.characterImages[0])
         $('#name').text(name)
         const timerText = $('#form').html('<strong id="mainTimer">Timer: <span id="time">0</span></strong>').css({ 'margin': '10px 7px 0px 5px' })
         this.startTimer()
         $('#yoda').css({ 'opacity': 1 })
+        this.started = true
+        this.startMove()
     },
     startTimer() {
 
@@ -44,7 +52,11 @@ const game = {
         if (!this.lightsOut) {
 
             this.atrophy()
-            this.move()
+
+            if (this.moveInterval) {
+
+                this.moveInterval = false;
+            }
         } else if (this.lightsOut) {
             this.interact('sleepiness')
             this.nightCount--
@@ -73,7 +85,8 @@ const game = {
             const age = $('#age').text(this.pet.age)
 
         }
-        if (this.pet.age > 5) this.getOld()
+        if (this.pet.age > 7) this.getOld()
+
 
     },
     atrophy() {
@@ -87,6 +100,7 @@ const game = {
             this.pet.boredom += this.getRandomNum()
             this.atrophyInterval = 3
             this.updateUi()
+            this.startMove()
         }
 
 
@@ -113,6 +127,7 @@ const game = {
     },
     toNight() {
         this.lightsOut = true;
+        $('#yoda').stop(true, true)
         $('#play-area').css({ 'filter': 'brightness(20%)' })
 
 
@@ -122,10 +137,10 @@ const game = {
 
         const yoda = $('#yoda')
         if (this.pet.age > 5) {
-            yoda.attr('src', 'images/oldyoda.png')
+            yoda.attr('src', this.characterImages[1])
 
         } else {
-            yoda.attr('src', 'images/babyyoda.png')
+            yoda.attr('src', this.characterImages[0])
         }
 
 
@@ -137,25 +152,77 @@ const game = {
         const yoda = $('#yoda')
         if (this.pet.age > 5) {
 
-            yoda.attr('src', 'images/yodaPlay.png')
+        	if (this.characterChoice === 'Yoda'){
+        		yoda.attr('src', 'images/yodaPlay.png')
+        	}
+        	else{
+        		yoda.attr('src', 'images/yodaplay.png')
+        	}
 
+            
         } else {
             yoda.attr('src', 'images/yodaplay.png')
         }
 
     },
-    move() {
+    startMove() {
 
-        const positions = ['center', 'flex-end', 'flex-start']
-        const rotations = [25, 0, -25]
-        const num1 = Math.floor(Math.random() * 3)
-        const num2 = Math.floor(Math.random() * 3)
-        const dance = $('#yoda').css({ 'transform': `rotate(${rotations[num1]}deg)` })
-        const move = $('#play-area').css({ 'justify-content': positions[num2] })
+
+       
+            $('#yoda').animate({
+                'margin-left': '+= 400'
+
+            }, 2500, this.moveRight())
+
+            if (this.rotated){
+            	this.rotateRight()
+            	this.rotated = false
+            }else{
+            	this.rotateLeft()
+            	this.rotated = true
+            }
 
 
     },
+    rotateLeft() {
 
+        
+
+            $('#yoda-container').attr('class', 'yoda-rotate-left')
+
+
+        
+
+    },
+    rotateRight(){
+
+    	
+
+            $('#yoda-container').attr('class','yoda-rotate-right')
+
+
+        
+    },
+    moveRight() {
+
+
+        
+            $('#yoda').animate({
+                'margin-right': '+=800'
+
+            }, 3000, this.moveLeft())
+
+        
+    },
+    moveLeft() {
+
+        $('#yoda').animate({
+            'margin-left': '+=600'
+
+        }, 2500)
+
+
+    },
     toDay() {
         $('#play-area').css({ 'filter': 'brightness(100%)' })
         this.nightCount = 3;
@@ -170,6 +237,7 @@ const game = {
             $('#mainTimer').text('Oh No! The Darkside Has Taken Him!')
 
             clearInterval(intervalSet)
+            $('#yoda').stop(true, true)
             this.dead = true;
 
         }
@@ -178,25 +246,42 @@ const game = {
     },
     getOld() {
 
-        $('#yoda').attr('src', 'images/oldyoda.png')
+    	if (characterChoice === 'Yoda'){
 
+    		$('#yoda').attr('src', this.characterImages[1])
+
+    	}
+    	else {
+    		$('#yoda').attr('src', this.characterImages[0])
+
+    	}
+
+        
     },
     eatAnimation() {
 
         const yoda = $('#yoda')
-        if (this.pet.age > 5) {
+
+
+    
             yoda.attr('src', 'images/food.png')
 
-        } else {
-            yoda.attr('src', 'images/food.png')
-        }
 
 
+    },
+    chooseCharacter(pet){
+
+    	if (pet === 'Luke'){
+    		this.characterChoice = 'Luke'
+    		this.characterImages = ['images/youngluke.png','images/youngluke2.png']
+    	}
+    	else {
+    		this.characterChoice = 'Yoda'
+    		this.characterImages = ['images/babyyoda.png','images/oldyoda.png']
+    	}
+    	$('#choices').hide()
+    	
     }
-
-
-
-
 
 }
 
@@ -212,7 +297,7 @@ $('#button-container').click((e) => {
 
     const interactionType = $(e.target).attr('id')
 
-    if (game.dead === false) {
+    if (game.dead === false && game.started === true) {
 
         switch (interactionType) {
 
@@ -255,6 +340,14 @@ $('form').submit((e) => {
     e.preventDefault()
     const name = $('#nameInput').val()
     game.setupGame(name)
+
+
+})
+
+$('.choose').click((e) => {
+
+	const choice = $(e.target).text()
+	game.chooseCharacter(choice)
 
 
 })

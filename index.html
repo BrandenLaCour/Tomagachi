@@ -4,6 +4,7 @@
 <head>
     <title></title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+     <link href="https://fonts.googleapis.com/css?family=Poller+One&display=swap" rel="stylesheet">
    <link href="https://fonts.googleapis.com/css?family=Anton|Cinzel&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
@@ -11,6 +12,11 @@
 <body>
 	<header><h1>STARMAGOTCHI</h1></header>
 	<div id='nameForm' >
+		<div id='choices'>
+			<button class='choose'>Yoda</button>Choose Your Pet <button class='choose'>Luke</button>
+
+		</div>
+		
 	<form id='form'>
 		Enter Name Here
 		<input id='nameInput'  type="text"></input>
@@ -22,7 +28,7 @@
 </div>
 	<nav >
 		<ul id= 'stats-container' >
-			<li class="name">Name: <span class='stat'><strong id="name"></strong></span></li>
+			<li class="name">Name: <span class='stat'><strong id="name"> </strong></span></li>
 			<li class="age">Age: <span  class='stat' id="age">1</span></li>
 			<li class="hunger">Hunger: <span  class='stat' id="hunger">0</span></li>
 			<li class="sleepiness">Sleepiness: <span  class='stat' id="sleepiness">0</span></li>
@@ -31,7 +37,10 @@
 		</ul>
 	</nav>
 	<main id='play-area'>
-		<img id='yoda' src="images/babyyoda.png">
+		<div id='yoda-container' >
+			<img id='yoda' src="images/youngluke2.png">
+		</div>
+		
 	</main>
 	
 	<footer >
@@ -41,6 +50,9 @@
 			<li><button id="light">Turn Off Lights</button></li>
 		</ul>
 	</footer>
+	<audio controls autoplay>
+  <source src="music/music.mp3" type="audio/mpeg">
+</audio>
 </body>
 <script src="js/app.js"></script>
 
