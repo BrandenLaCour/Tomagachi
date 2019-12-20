@@ -45,7 +45,7 @@ const game = {
     },
     runGame() {
 
-
+    	if (this.dead === false) this.resetAnimation()
         this.incrementTimer()
         this.incrementAge()
 
@@ -66,7 +66,7 @@ const game = {
             }
         }
         this.endGame()
-        if (this.dead === false) this.resetAnimation()
+        
 
 
 
@@ -246,7 +246,7 @@ const game = {
     },
     getOld() {
 
-    	if (characterChoice === 'Yoda'){
+    	if (this.characterChoice === 'Yoda'){
 
     		$('#yoda').attr('src', this.characterImages[1])
 
