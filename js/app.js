@@ -1,8 +1,8 @@
 class Tomagachi {
     constructor(name) {
-        this.hunger = 20
-        this.sleepiness = 20
-        this.boredom = 20
+        this.hunger = 0
+        this.sleepiness = 0
+        this.boredom = 0
         this.age = 1
         this.name = name
 
@@ -10,29 +10,51 @@ class Tomagachi {
 
 }
 
+let intervalSet;
+
 const game = {
     pet: {},
     time: 0,
-    ageInterval: 5,
+    ageInterval: 2,
     atrophyInterval: 3,
+    nightCount: 4,
+    lightsOut: false,
+    dead: false,
     setupGame(name) {
 
         this.pet = new Tomagachi(name)
         $('#name').text(name)
-        const timerText = $('#form').html('<strong>Timer: <span id="time">0</span></strong>').css({ 'margin': '10px 7px 0px 5px' })
+        const timerText = $('#form').html('<strong id="mainTimer">Timer: <span id="time">0</span></strong>').css({ 'margin': '10px 7px 0px 5px' })
         this.startTimer()
+        $('#yoda').css({ 'opacity': 1 })
     },
     startTimer() {
 
-        window.setInterval(() => {
+        intervalSet = window.setInterval(() => {
 
             this.runGame()
         }, 1000)
     },
     runGame() {
+
+
         this.incrementTimer()
         this.incrementAge()
-        this.atrophy()
+
+        if (!this.lightsOut) {
+
+            this.atrophy()
+            this.move()
+        } else if (this.lightsOut) {
+            this.interact('sleepiness')
+            this.nightCount--
+            if (this.nightCount === 0) {
+                this.toDay()
+
+            }
+        }
+        this.endGame()
+        if (this.dead === false) this.resetAnimation()
 
 
 
@@ -47,10 +69,11 @@ const game = {
         if (this.ageInterval === 0) {
 
             this.pet.age++
-            this.ageInterval = 10;
+            this.ageInterval = 2;
             const age = $('#age').text(this.pet.age)
 
         }
+        if (this.pet.age > 5) this.getOld()
 
     },
     atrophy() {
@@ -59,9 +82,9 @@ const game = {
 
         if (this.atrophyInterval === 0) {
 
-            this.pet.hunger -= this.getRandomNum()
-            this.pet.sleepiness -= this.getRandomNum()
-            this.pet.boredom -= this.getRandomNum()
+            this.pet.hunger += this.getRandomNum()
+            this.pet.sleepiness += this.getRandomNum()
+            this.pet.boredom += this.getRandomNum()
             this.atrophyInterval = 3
             this.updateUi()
         }
@@ -70,27 +93,103 @@ const game = {
     },
     getRandomNum() {
 
-        return Math.floor(Math.random() * 6)
+        return Math.ceil(Math.random() * 3)
     },
     updateUi() {
         $('#hunger').text(this.pet.hunger)
         $('#sleepiness').text(this.pet.sleepiness)
         $('#boredom').text(this.pet.boredom)
     },
-    feed() {
+    interact(stat) {
 
-        const food = this.getRandomNum() + 2
-        this.pet.hunger += food
-        this.pet.hunger > 20 ? this.pet.hunger = 20 : this.pet.hunger
+        const num = stat === 'sleepiness' ? 1 : this.getRandomNum() + 2
+        stat === 'boredom' ? this.playAnimation(stat) : this.eatAnimation(stat)
+
+        this.pet[stat] -= num
+        this.pet[stat] < 0 ? this.pet[stat] = 0 : this.pet[stat]
         this.updateUi()
+
 
     },
-    play(stat){
+    toNight() {
+        this.lightsOut = true;
+        $('#play-area').css({ 'filter': 'brightness(20%)' })
 
-    	const num = this.getRandomNum() + 2
-        this.pet[stat] += num
-        this.pet[stat] > 20 ? this.pet[stat] = 20 : this.pet[stat]
-        this.updateUi()
+
+
+    },
+    resetAnimation() {
+
+        const yoda = $('#yoda')
+        if (this.pet.age > 5) {
+            yoda.attr('src', 'images/oldyoda.png')
+
+        } else {
+            yoda.attr('src', 'images/babyyoda.png')
+        }
+
+
+
+
+    },
+    playAnimation() {
+
+        const yoda = $('#yoda')
+        if (this.pet.age > 5) {
+
+            yoda.attr('src', 'images/yodaPlay.png')
+
+        } else {
+            yoda.attr('src', 'images/yodaplay.png')
+        }
+
+    },
+    move() {
+
+        const positions = ['center', 'flex-end', 'flex-start']
+        const rotations = [25, 0, -25]
+        const num1 = Math.floor(Math.random() * 3)
+        const num2 = Math.floor(Math.random() * 3)
+        const dance = $('#yoda').css({ 'transform': `rotate(${rotations[num1]}deg)` })
+        const move = $('#play-area').css({ 'justify-content': positions[num2] })
+
+
+    },
+
+    toDay() {
+        $('#play-area').css({ 'filter': 'brightness(100%)' })
+        this.nightCount = 3;
+        this.lightsOut = false
+
+    },
+    endGame() {
+        if (this.pet.boredom >= 10 || this.pet.sleepiness >= 10 || this.pet.hunger >= 10) {
+
+            $('#yoda').attr('src', 'images/gravestone.png')
+            $('#mainTimer').html('')
+            $('#mainTimer').text('Oh No! The Darkside Has Taken Him!')
+
+            clearInterval(intervalSet)
+            this.dead = true;
+
+        }
+
+
+    },
+    getOld() {
+
+        $('#yoda').attr('src', 'images/oldyoda.png')
+
+    },
+    eatAnimation() {
+
+        const yoda = $('#yoda')
+        if (this.pet.age > 5) {
+            yoda.attr('src', 'images/food.png')
+
+        } else {
+            yoda.attr('src', 'images/food.png')
+        }
 
 
     }
@@ -108,17 +207,41 @@ const game = {
 
 
 
+// interact with pet
+$('#button-container').click((e) => {
 
+    const interactionType = $(e.target).attr('id')
 
+    if (game.dead === false) {
 
+        switch (interactionType) {
 
+            case 'feed':
+                if (!game.lightsOut) {
 
+                    game.interact('hunger')
+                }
 
+                break;
 
+            case 'play':
+                if (!game.lightsOut) {
+                    game.interact('boredom')
 
-$('#feed').click(() => {
+                }
 
-	game.feed()
+                break;
+
+            case 'light':
+                game.toNight()
+                break;
+            default:
+                break;
+
+        }
+
+    }
+
 
 })
 
@@ -126,13 +249,11 @@ $('#feed').click(() => {
 
 
 
-
-
+// start game and name pet
 $('form').submit((e) => {
 
     e.preventDefault()
     const name = $('#nameInput').val()
-
     game.setupGame(name)
 
 
